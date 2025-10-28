@@ -36,5 +36,24 @@ out/
 ### VS Code ###
 .vscode/
 
-# Frontend node_modules
+### Frontend node_modules
 node_modules/
+
+### build output
+/build/
+/target/
+
+# environment variables
+*.env
+application-*.yml
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
