@@ -5,7 +5,8 @@ COPY . /app
 
 RUN chmod +x gradlew
 
-# 경고 무시 + 상세 로그 출력
-RUN ./gradlew :bootJar -x test --warning-mode all --stacktrace
+# 빌드 (테스트 생략 + 경고 확인)
+RUN ./gradlew bootJar -x test --warning-mode all --stacktrace
 
-CMD ["java", "-jar", "build/libs/taste-map-backend-0.0.1-SNAPSHOT.jar"]
+# 실행
+CMD ["java", "-jar", "build/libs/app.jar"]
