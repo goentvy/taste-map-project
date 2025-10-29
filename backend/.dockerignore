@@ -1,0 +1,26 @@
+# Git 및 IDE 관련
+.git
+.gitignore
+*.md
+*.log
+*.iml
+.idea/
+.vscode/
+
+# 빌드 결과물
+build/
+out/
+target/
+
+# 테스트 및 문서
+test/
+docs/
+
+# 환경 파일
+.env
+*.properties
+*.yml
+
+# OS 및 사용자 캐시
+.DS_Store
+Thumbs.db
