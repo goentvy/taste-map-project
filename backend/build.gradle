@@ -55,4 +55,9 @@ test {
 
 bootJar {
     archiveFileName = 'app.jar' // Docker에서 경로 관리 쉽게 하려고 커스터마이징
+    manifest {
+        attributes(
+            'Main-Class': 'org.springframework.boot.loader.JarLauncher'
+        )
+    }
 }

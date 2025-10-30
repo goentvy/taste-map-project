@@ -5,10 +5,11 @@ WORKDIR /app
 COPY gradlew /app/
 COPY gradle /app/gradle
 COPY build.gradle settings.gradle /app/
-RUN chmod +x gradlew
-RUN ./gradlew clean bootJar -x test --warning-mode all --stacktrace
 
 COPY . /app
+
+RUN chmod +x gradlew
+RUN ./gradlew clean bootJar -x test --warning-mode all --stacktrace
 
 EXPOSE 8080
 
