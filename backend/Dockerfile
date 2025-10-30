@@ -6,7 +6,7 @@ COPY gradlew /app/
 COPY gradle /app/gradle
 COPY build.gradle settings.gradle /app/
 RUN chmod +x gradlew
-RUN ./gradlew bootJar -x test --warning-mode all --stacktrace
+RUN ./gradlew clean bootJar -x test --warning-mode all --stacktrace
 
 COPY . /app
 
