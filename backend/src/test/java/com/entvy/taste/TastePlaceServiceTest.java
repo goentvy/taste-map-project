@@ -52,7 +52,7 @@ public class TastePlaceServiceTest {
         """;
 
         RestTemplate restTemplate = mock(RestTemplate.class);
-        TastePlaceService service = new TastePlaceService(repository);
+        TastePlaceService service = new TastePlaceService(repository, "dummy-api-key");
         Field restTemplateField = TastePlaceService.class.getDeclaredField("restTemplate");
         restTemplateField.setAccessible(true);
         restTemplateField.set(service, restTemplate);
@@ -79,7 +79,7 @@ public class TastePlaceServiceTest {
         """;
 
         RestTemplate restTemplate = mock(RestTemplate.class);
-        TastePlaceService service = new TastePlaceService(repository);
+        TastePlaceService service = new TastePlaceService(repository, "dummy-api-key");
         Field restTemplateField = TastePlaceService.class.getDeclaredField("restTemplate");
         restTemplateField.setAccessible(true);
         restTemplateField.set(service, restTemplate);

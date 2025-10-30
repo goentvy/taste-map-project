@@ -2,6 +2,7 @@ package com.entvy.taste;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,11 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TastePlaceAutoTest {
-
-    private static final String API_KEY = "YOUR_API_KEY"; // 실제 키로 교체
-    private static final String BASE_URL = "https://openapi.gg.go.kr/PlaceThatDoATasteyFoodSt?Key=" + API_KEY + "&Type=xml&SIGUN_NM=";
-
     public static void main(String[] args) throws Exception {
+        Dotenv dotenv = Dotenv.load();
+        String apikey = dotenv.get("SPRING_OPENAPI_KEY");
+        String baseUrl = "https://openapi.gg.go.kr/PlaceThatDoATasteyFoodSt?Key=" + apikey + "&Type=xml&SIGUN_NM=";
+
         List<String> regions = Arrays.asList(
                 "수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "안양시", "평택시", "의정부시", "시흥시",
                 "김포시", "광명시", "군포시", "오산시", "이천시", "구리시", "남양주시", "하남시", "파주시", "여주시",
@@ -24,7 +25,7 @@ public class TastePlaceAutoTest {
         XmlMapper xmlMapper = new XmlMapper();
 
         for (String region : regions) {
-            String url = BASE_URL + region;
+            String url = baseUrl + region;
             try {
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
                 JsonNode root = xmlMapper.readTree(response.getBody().getBytes());

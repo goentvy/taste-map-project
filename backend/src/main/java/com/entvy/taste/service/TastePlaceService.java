@@ -6,8 +6,8 @@ import com.entvy.taste.repository.TastePlaceRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,10 +21,10 @@ public class TastePlaceService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final TastePlaceRepository repository;
 
-    public TastePlaceService(TastePlaceRepository repository) {
+    public TastePlaceService(TastePlaceRepository repository,
+                             @Value("${spring.openapi.key}") String apikey) {
         this.repository = repository;
-        Dotenv dotenv = Dotenv.load();
-        this.apikey = dotenv.get("SPRING_OPENAPI_KEY");
+        this.apikey = apikey;
     }
 
     public List<TastePlace> findByRegion(String sigunNm) {
