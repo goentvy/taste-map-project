@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -54,10 +55,12 @@ test {
 }
 
 bootJar {
-    archiveFileName = 'app.jar' // Docker에서 경로 관리 쉽게 하려고 커스터마이징
-    manifest {
-        attributes(
-            'Main-Class': 'org.springframework.boot.loader.JarLauncher'
-        )
-    }
+    archiveBaseName.set("app")
+    archiveVersion.set("")
+    archiveClassifier.set("")
+    archiveFileName = 'app.jar'
+}
+
+jar {
+    enabled = false
 }
