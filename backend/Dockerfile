@@ -11,6 +11,8 @@ COPY . /app
 RUN chmod +x gradlew
 RUN ./gradlew clean bootJar -x test --warning-mode all --stacktrace
 
-EXPOSE 8080
+# 결과물 복사
+RUN cp build/libs/app.jar /app/app.jar
 
-CMD ["java", "-jar", "build/libs/app.jar"]
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
