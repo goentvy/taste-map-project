@@ -9,7 +9,7 @@
     "types": ["vite/client", "node"],
     "skipLibCheck": true,
     "composite": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "typeRoots": ["./src/types", "./node_modules/@types", "./node_modules/vite"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

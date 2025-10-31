@@ -9,7 +9,7 @@ export default function Header() {
           🍽️ TasteMap
         </Link>
         <nav className="header__nav">
-          <Link to="/places">맛집 리스트</Link>
+          <Link to="/">맛집 리스트</Link>
           <Link to="/about">소개</Link>
         </nav>
       </div>

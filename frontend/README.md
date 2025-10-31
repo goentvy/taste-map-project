@@ -13,6 +13,7 @@ React + TypeScript 기반 맛있는식당을찾기위한 앱 Frontend
 - React Hot Toast : 사용자 알림 및 피드백 UI 구성
 
 ## 프로젝트 구조
+```markdown
 src/
 ├── assets/        # 이미지, 아이콘, 폰트 등 정적 파일
 ├── components/    # 재사용 가능한 UI 컴포넌트
@@ -25,6 +26,7 @@ src/
 ├── App.tsx        # 전체 앱의 루트 컴포넌트
 ├── Layout.tsx     # 공통 레이아웃 컴포넌트
 └── main.tsx       # 앱 진입점 (ReactDOM 렌더링)
+```
 
 ## 📦 설치 및 실행
 
