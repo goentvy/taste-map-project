@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RegionSelector from "../components/RegionSelector/RegionSelector";
 import TastePlaceList from "../components/TastePlaceList/TastePlaceList";
 import MapView from "../components/MapView/MapView";
@@ -7,7 +7,7 @@ import type { TastePlace } from "../types/tastePlace";
 import toast from "react-hot-toast";
 
 const Home: React.FC = () => {
-  const [region, setRegion] = useState("");
+  const [region, setRegion] = useState("수원시");
   const [selectedPlace, setSelectedPlace] = useState<TastePlace | null>(null);
   const { data, isLoading, error } = useTastePlaces(region);
 
@@ -22,7 +22,7 @@ const Home: React.FC = () => {
       {isLoading && <p>로딩 중...</p>}
       {error && <p>데이터를 불러오는 데 실패했습니다.</p>}
       {data && <TastePlaceList places={data} onSelect={setSelectedPlace} />}
-      <MapView selectedPlace={selectedPlace} />
+      {data && (<MapView placeList={data} />)}
     </div>
   );
 };

@@ -1,97 +1,109 @@
-import React, { useEffect, useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import { useKakaoMapLoader } from "../../hooks/useKakaoMapLoader";
 import type { TastePlace } from "../../types/tastePlace";
 
-interface Props {
-  selectedPlace: TastePlace | null;
+interface MapViewProps {
+  placeList: TastePlace[];
 }
 
-interface KakaoAddressResult {
-  x: string;
-  y: string;
-  address_name: string;
+export interface MapViewHandle {
+  focusMarker: (index: number) => void;
 }
 
-const waitForKakao = (): Promise<void> => {
-  return new Promise((resolve) => {
-    const check = () => {
-      if (window.kakao && window.kakao.maps) {
-        resolve();
-      } else {
-        setTimeout(check, 100);
-      }
-    };
-    check();
-  });
-};
+const MapView = forwardRef<MapViewHandle, MapViewProps>(
+  ({ placeList }, ref) => {
+    const mapRef = useKakaoMapLoader("map");
+    const markerDataRef = useRef<{ marker: any; infoWindow: any }[]>([]);
+    const kakao = (window as any).kakao;
 
-const MapView: React.FC<Props> = ({ selectedPlace }) => {
-  const mapRef = useRef<any>(null); // 지도 객체 저장
-  const markerRef = useRef<any>(null); // 마커 객체 저장
+    // 외부에서 마커를 제어할 수 있도록 expose
+    useImperativeHandle(ref, () => ({
+      focusMarker: (index: number) => {
+        const data = markerDataRef.current[index];
+        if (!data) return;
 
-  useEffect(() => {
-    const initMap = async () => {
-      await waitForKakao();
+        const { marker, infoWindow } = data;
+        mapRef.current?.setCenter(marker.getPosition());
+        infoWindow.open(mapRef.current, marker);
+      },
+    }));
 
-      const mapContainer = document.getElementById("map");
-      if (!mapContainer) return;
+    useEffect(() => {
+      if (!mapRef.current || !placeList || placeList.length === 0) return;
 
-      const mapOption = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.9780),
-        level: 3,
-      };
+      const geocoder = new kakao.maps.services.Geocoder();
+      const bounds = new kakao.maps.LatLngBounds();
+      markerDataRef.current = []; // 초기화
 
-      mapRef.current = new window.kakao.maps.Map(mapContainer, mapOption);
-    };
+      const markerPromises = placeList.map((place, index) => {
+        return new Promise<void>((resolve) => {
+          geocoder.addressSearch(
+            place.refineRoadnmAddr,
+            (result: any, status: string) => {
+              if (
+                status === kakao.maps.services.Status.OK &&
+                result.length > 0
+              ) {
+                const coords = new kakao.maps.LatLng(
+                  result[0].y,
+                  result[0].x
+                );
+                bounds.extend(coords);
 
-    initMap();
-  }, []);
+                const marker = new kakao.maps.Marker({
+                  map: mapRef.current,
+                  position: coords,
+                });
 
-  useEffect(() => {
-    if (!selectedPlace || !mapRef.current) return;
-    const { refineRoadnmAddr } = selectedPlace;
-    const geocoder = new window.kakao.maps.services.Geocoder();
+                const infoWindow = new kakao.maps.InfoWindow({
+                  content: `
+                    <div style="padding:8px; font-size:14px;">
+                      <strong>${place.restrtNm}</strong><br/>
+                      ${
+                        place.reprsntFoodNm
+                          ? `${place.reprsntFoodNm}<br/>`
+                          : ""
+                      }
+                      ${place.tastfdplcTelno || "전화번호 없음"}
+                    </div>
+                  `,
+                });
 
-    geocoder.addressSearch(refineRoadnmAddr, (result: KakaoAddressResult[], status: string) => {
+                markerDataRef.current[index] = { marker, infoWindow };
 
-      if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
-        const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+                kakao.maps.event.addListener(marker, "click", () => {
+                  const { marker, infoWindow } =
+                    markerDataRef.current[index];
+                  if (!infoWindow || typeof infoWindow.getMap !== "function")
+                    return;
 
-        // 기존 마커 제거
-        if (markerRef.current) {
-          markerRef.current.setMap(null);
+                  if (infoWindow.getMap()) {
+                    infoWindow.close();
+                  } else {
+                    infoWindow.open(mapRef.current, marker);
+                  }
+                });
+              }
+              resolve();
+            }
+          );
+        });
+      });
+
+      Promise.all(markerPromises).then(() => {
+        if (!bounds.isEmpty()) {
+          mapRef.current.setBounds(bounds);
         }
+      });
+    }, [placeList, mapRef.current]);
 
-        // 새 마커 생성 및 저장
-        markerRef.current = new window.kakao.maps.Marker({
-          map: mapRef.current,
-          position: coords,
-        });
-
-        // InfoWindow 생성
-        const infoWindow = new window.kakao.maps.InfoWindow({
-          content: `
-            <div style="padding:8px; font-size:14px;">
-              <strong>${selectedPlace.restrtNm}</strong><br/>
-              ${selectedPlace.reprsntFoodNm || "대표음식 없음"}<br/>
-              ${selectedPlace.refineRoadnmAddr || "주소지 없음"}<br/>
-              ${selectedPlace.tastfdplcTelno || "전화번호 없음"}
-            </div>
-          `,
-        });
-
-        // 마커 클릭 시 InfoWindow 열기
-        window.kakao.maps.event.addListener(markerRef.current, "click", () => {
-          infoWindow.open(mapRef.current, markerRef.current);
-        });
-
-        mapRef.current.setCenter(coords);
-      } else {
-        console.warn("주소 검색 실패 또는 결과 없음");
-      }
-    });
-  }, [selectedPlace]);
-
-  return <div id="map" style={{ width: "100%", height: "400px", marginTop: "1rem" }} />;
-};
+    return <div id="map" style={{ width: "100%", height: "500px" }} />;
+  }
+);
 
 export default MapView;

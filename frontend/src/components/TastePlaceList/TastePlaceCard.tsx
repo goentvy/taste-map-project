@@ -1,5 +1,6 @@
 import React from "react";
 import type { TastePlace } from "../../types/tastePlace";
+import "./TastePlaceCard.css";
 
 interface Props {
   data: TastePlace;
@@ -7,9 +8,9 @@ interface Props {
 }
 
 const TastePlaceCard: React.FC<Props> = ({ data, onSelect }) => {
-    const handleClick = () => {
-        onSelect(data);
-    }
+  const handleClick = () => {
+      onSelect(data);
+  }
   return (
     <div className="card" onClick={handleClick} style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1rem", cursor: "pointer" }}>
       <h3>{data.restrtNm}</h3>
