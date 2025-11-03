@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 
 import Layout from "./Layout";
 import Home from "./pages/Home";
-import PlacePage from "./pages/PlacePage";
+// import PlacePage from "./pages/PlacePage";
 import About from "./pages/About";
 
 const queryClient = new QueryClient();

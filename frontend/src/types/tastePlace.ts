@@ -1,4 +1,5 @@
 export interface TastePlace {
+  id: string;
   restrtNm: string; // 음식점명
   refineRoadnmAddr: string; // 도로명주소
   tastfdplcTelno: string; // 전화번호

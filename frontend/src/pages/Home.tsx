@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RegionSelector from "../components/RegionSelector/RegionSelector";
 import TastePlaceList from "../components/TastePlaceList/TastePlaceList";
 import MapView from "../components/MapView/MapView";
@@ -22,7 +22,7 @@ const Home: React.FC = () => {
       {isLoading && <p>로딩 중...</p>}
       {error && <p>데이터를 불러오는 데 실패했습니다.</p>}
       {data && <TastePlaceList places={data} onSelect={setSelectedPlace} />}
-      {data && (<MapView placeList={data} />)}
+      {data && selectedPlace && (<MapView placeList={data} />)}
     </div>
   );
 };
